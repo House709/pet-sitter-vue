@@ -45,6 +45,7 @@ export default {
     };
 
     const handleSearch = () => {
+      console.log(searchData.value);
       const searchParams = new URLSearchParams();
       if (searchData.value.types.length > 0) {
         searchParams.append("petType", searchData.value.types.join(","));
@@ -86,7 +87,7 @@ export default {
           :key="type"
           :label="type"
           :isChecked="searchData.types.includes(type)"
-          @onChanged="handleCheckBox(type)"
+          @change="handleCheckBox(type)"
         />
       </div>
     </div>
@@ -107,7 +108,7 @@ export default {
               'flex items-center h-[36px] px-2 py-1 gap-[2px] border-[1px] text-gray-400 rounded-[8px] border-[#DCDFED] bg-white hover:border-orange-500',
               { 'border-orange-500 text-orange-500': rate === searchData.rate },
             ]"
-            @onClick="handleRating(rate)"
+            @click="handleRating(rate)"
           >
             <span class="pr-[3px] font-Satoshi">{{ rate }}</span>
             <StarIcon v-for="(_, index) in rate" :key="index" color="#1CCD83" />
@@ -132,7 +133,9 @@ export default {
 
       <!-- Search Button -->
       <div>
-        <ButtonPrimary content="Search" @click="handleSearch" />
+        <ButtonPrimary content="Search" :onClick="handleSearch" />
+
+        <button @click="handleSearch">Search</button>
       </div>
     </div>
   </div>

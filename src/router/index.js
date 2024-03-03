@@ -1,21 +1,21 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import HomePage from "@/components/home_page/HomePage.vue";
+import TestPage from "@/components/TestPage.vue";
 
-Vue.use(VueRouter);
-
-const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: HomePage,
-  },
-];
-
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+const router = createRouter({
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: HomePage,
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: TestPage,
+    },
+  ],
 });
 
 export default router;

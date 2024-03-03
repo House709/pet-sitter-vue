@@ -8,6 +8,14 @@ import FilterBar from "./FilterBar.vue";
 
 export default {
   name: "HomePage",
+  components: {
+    NavBar,
+    Header,
+    ShowCaseVue,
+    Banner,
+    Footer,
+    FilterBar,
+  },
 };
 </script>
 
@@ -21,6 +29,3 @@ export default {
     <Footer />
   </div>
 </template>
-
-<style scoped></style>
-../system_design/NavBar.vue

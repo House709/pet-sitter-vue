@@ -28,7 +28,7 @@ export default {
 
 <template>
   <button
-    @onClick="onClick ? onClick : null"
+    @click="onClick ? onClick() : null"
     :type="type ? type : null"
     class="inline-flex justify-center items-center py-3 px-6 rounded-full gap-2 border-none bg-orange-500 text-white text-bodyButton hover:bg-orange-400 active:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-300"
     :style="{ width: width ? width : '139px', height: '48px' }"

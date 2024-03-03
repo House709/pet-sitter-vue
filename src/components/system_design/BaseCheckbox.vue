@@ -4,7 +4,7 @@ export default {
   props: {
     isChecked: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     label: String,
     onChanged: Function,
@@ -27,7 +27,10 @@ export default {
       <div
         class="w-6 h-6 rounded-[6px] border border-gray-200 hover:border-orange-300 peer-checked/chk:bg-orange-500 transition-all"
       >
-        <div v-if="true" class="flex w-full h-full items-center justify-center">
+        <div
+          v-if="isChecked"
+          class="flex w-full h-full items-center justify-center"
+        >
           <CheckIcon color="white" />
         </div>
       </div>
