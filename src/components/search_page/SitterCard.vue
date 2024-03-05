@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div class="w-[848px] flex flex-col gap-4">
     <router-link
       :to="`/sitterDetail/${card.id}`"
@@ -61,16 +61,23 @@
 </template>
 
 <script>
-import { StarIcon, MapMakerIcon } from "@/components/systemdesign/Icons.vue";
-import {
-  DogType,
-  CatType,
-  BirdType,
-  RabbitType,
-} from "@/components/systemdesign/PetType.vue";
+import StarIcon from "../icons/StarIcon.vue";
+import MapMakerIcon from "../icons/MapMakerIcon.vue";
+import DogType from "../system_design/DogType.vue";
+import CatType from "../system_design/CatType.vue";
+import BirdType from "../system_design/BirdType.vue";
+import RabbitType from "../system_design/RabbitType.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  components: {
+    StarIcon,
+    MapMakerIcon,
+    DogType,
+    CatType,
+    RabbitType,
+    BirdType,
+  },
   props: {
     items: Array,
   },
@@ -96,4 +103,3 @@ export default defineComponent({
 <style scoped>
 /* Your component-specific styles go here */
 </style>
- -->

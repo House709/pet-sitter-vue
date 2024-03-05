@@ -15,11 +15,26 @@
 export default {
   props: {
     id: String,
-    onClick: Function,
-    type: String,
-    content: String,
-    width: String,
-    disabled: Boolean,
+    type: {
+      type: String,
+      default: null,
+    },
+    width: {
+      type: Number,
+      default: 139,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    content: {
+      type: String,
+      default: "",
+    },
+    onClick: {
+      type: Function,
+      default: null,
+    },
   },
   methods: {
     onClickHandler() {

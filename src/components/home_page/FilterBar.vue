@@ -1,5 +1,6 @@
 <script>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import BaseCheckbox from "../system_design/BaseCheckbox.vue";
 import ButtonPrimary from "../buttons/ButtonPrimary.vue";
 import StarIcon from "../icons/StarIcon.vue";
@@ -12,6 +13,8 @@ export default {
     CheckIcon,
   },
   setup() {
+    const router = useRouter();
+
     const searchData = ref({
       types: [],
       rate: undefined,
@@ -45,19 +48,27 @@ export default {
     };
 
     const handleSearch = () => {
-      console.log(searchData.value);
-      const searchParams = new URLSearchParams();
+      const queryParams = {};
+
       if (searchData.value.types.length > 0) {
-        searchParams.append("petType", searchData.value.types.join(","));
+        queryParams.petType = searchData.value.types.join(",");
       }
 
-      if (searchData.value.rate) {
-        searchParams.append("rate", searchData.value.rate);
+      if (
+        searchData.value.rate !== undefined &&
+        searchData.value.rate !== null
+      ) {
+        queryParams.rate = searchData.value.rate;
       }
 
-      if (searchData.value.exp) {
-        searchParams.append("exp", searchData.value.exp);
+      if (searchData.value.exp !== undefined && searchData.value.exp !== null) {
+        queryParams.exp = searchData.value.exp;
       }
+
+      router.push({
+        name: "search",
+        query: queryParams,
+      });
     };
 
     return {
@@ -134,8 +145,6 @@ export default {
       <!-- Search Button -->
       <div>
         <ButtonPrimary content="Search" :onClick="handleSearch" />
-
-        <button @click="handleSearch">Search</button>
       </div>
     </div>
   </div>

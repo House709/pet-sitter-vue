@@ -39,9 +39,10 @@
 
       <!-- Start Rating -->
       <div>
-        <div class="text-[16px] pb-4 font-bold text-etc-black">Rating:</div>
+        <div class="text-[16px] pb-4 font-bold text-black">Rating:</div>
         <div class="flex flex-wrap gap-2">
           <button
+            type="button"
             v-for="(rate, index) in starRates"
             :key="index"
             class="flex items-center h-[36px] px-2 py-1 gap-[2px] border-[1px] text-gray-400 rounded-[8px] border-[#DCDFED] bg-etc-white hover:border-orange-500"
@@ -75,8 +76,18 @@
 
       <!-- Start Button -->
       <div class="flex gap-4">
-        <ButtonSecondary content="Clear" width="{165}" @click="handleClear" />
-        <ButtonPrimary content="Search" width="{165}" type="submit" />
+        <ButtonSecondary
+          content="Clear"
+          :width="165"
+          :onClick="handleClear"
+          type="button"
+        />
+        <ButtonPrimary
+          content="Search"
+          :width="165"
+          type="button"
+          :onClick="handleSubmit"
+        />
       </div>
       <!-- Start Button -->
     </form>
@@ -84,29 +95,47 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
-import { useRoute } from "vue-router";
-import { StarIcon, SearchIcon } from "../systemdesign/Icons.vue";
-import { ButtonSecondary, ButtonPrimary } from "../systemdesign/Button.vue";
-import { BaseCheckbox } from "../systemdesign/BaseCheckbox.vue";
+import { ref, reactive, onMounted } from "vue";
+import StarIcon from "../icons/StarIcon.vue";
+import SearchIcon from "../icons/SearchIcon.vue";
+import ButtonPrimary from "../buttons/ButtonPrimary.vue";
+import ButtonSecondary from "../buttons/ButtonSecondary.vue";
+import BaseCheckbox from "../system_design/BaseCheckbox.vue";
 
 export default {
-  setup() {
-    const route = useRoute();
-    const searchParams = new URLSearchParams(route.query);
+  props: {
+    onSearch: Function,
+  },
+  components: {
+    StarIcon,
+    SearchIcon,
+    BaseCheckbox,
+    ButtonPrimary,
+    ButtonSecondary,
+  },
+  setup(props) {
+    const searchParams = new URLSearchParams(window.location.search);
+
     let petType;
     if (searchParams.get("petType")) {
       petType = searchParams.get("petType").split(",");
     }
-
     const searchData = reactive({
       search: "",
       types: petType || [],
       rate: parseInt(searchParams.get("rate")),
-      exp: searchParams.get("exp") || 3,
+      exp: parseInt(searchParams.get("exp")) || 3,
+    });
+
+    onMounted(() => {
+      props.onSearch(searchData);
     });
 
     const focus = ref(false);
+
+    const setFocus = (isFocused) => {
+      focus.value = isFocused;
+    };
 
     const allPetTypes = ["Dog", "Cat", "Bird", "Rabbit"];
     const starRates = [5, 4, 3, 2, 1];
@@ -143,7 +172,7 @@ export default {
     };
 
     const handleSubmit = () => {
-      onSearch(searchData);
+      props.onSearch(searchData);
     };
 
     const handleClear = () => {
@@ -154,12 +183,17 @@ export default {
         exp: 3,
       };
       Object.assign(searchData, clearedSearchData);
-      onSearch(clearedSearchData);
+      const searchParams = new URLSearchParams();
+
+      const newUrl = `${window.location.pathname}${searchParams.toString()}`;
+      window.history.replaceState({}, "", newUrl);
+      props.onSearch(clearedSearchData);
     };
 
     return {
       searchData,
       focus,
+      setFocus,
       allPetTypes,
       starRates,
       allExp,
@@ -169,12 +203,8 @@ export default {
       handleExperience,
       handleSubmit,
       handleClear,
+      petType,
     };
-  },
-  methods: {
-    onSearch(data) {
-      // Your onSearch logic here
-    },
   },
 };
 </script>

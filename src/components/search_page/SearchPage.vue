@@ -1,6 +1,6 @@
-<!-- <template>
+<template>
   <div>
-    <Navbar />
+    <NavBar />
     <div
       class="flex flex-col w-[1440px] h-[1570px] pt-10 pb-20 px-20 bg-[#FAFAFB]"
     >
@@ -8,8 +8,8 @@
         Search For Pet Sitter
       </div>
       <div class="flex py-[80px] gap-9" ref="topRef">
-        <SitterSearch @onSearch="searchPets" />
-        <SitterCardList v-if="pets.length > 0" :items="pets" />
+        <SearchPanel :onSearch="handleSearch" :topRef="topRef" />
+        <SitterCard v-if="pets.length > 0" :items="pets" />
         <div v-else class="flex text-[20px] pl-[26%] pt-[10%] gap-3">
           <PetIcon color="#FF7037" />
           Pet sitter not found <PetIcon color="#FF7037" />
@@ -51,59 +51,79 @@
 
 <script>
 import axios from "axios";
-import SitterSearch from "@/components/seacrhlistcomponent/SitterSearch.vue";
-import SitterCardList from "@/components/seacrhlistcomponent/SitterCardList.vue";
-import Navbar from "@/components/systemdesign/Navbar.vue";
-import Footer from "@/components/systemdesign/Footer.vue";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  PetIcon,
-} from "@/components/systemdesign/Icons.vue";
+import { ref } from "vue";
+
+import SearchPanel from "./SearchPanel.vue";
+import SitterCard from "./SitterCard.vue";
+import NavBar from "../system_design/NavBar.vue";
+import Footer from "../system_design/Footer.vue";
+import ArrowLeftIcon from "../icons/ArrowLeftIcon.vue";
+import ArrowRightIcon from "../icons/ArrowRightIcon.vue";
+import PetIcon from "../icons/PetIcon.vue";
 
 export default {
+  name: "SearchPage",
   components: {
-    Navbar,
-    SitterSearch,
-    SitterCardList,
+    NavBar,
+    SearchPanel,
+    SitterCard,
     Footer,
     ArrowLeftIcon,
     ArrowRightIcon,
     PetIcon,
   },
-  data() {
-    return {
-      searchData: null,
-      pets: [],
-      paging: {
-        currentPage: 1,
-        totalPages: 1,
-      },
+  setup() {
+    const searchData = ref(null);
+    const pets = ref([]);
+    const paging = ref({
+      currentPage: 1,
+      totalPages: 1,
+    });
+
+    const topRef = ref(null);
+
+    const handleSearch = (data) => {
+      searchData.value = data;
+      searchPets(data);
     };
-  },
-  methods: {
-    async searchPets(data) {
+
+    const handlePaging = (page) => {
+      if (page >= 1 && page <= paging.value.totalPages) {
+        searchPets({ ...searchData.value, paging: page });
+      }
+    };
+
+    const searchPets = async (data) => {
       const searchParams = new URLSearchParams();
       if (data !== undefined) {
         if (data.search) searchParams.append("search", data.search);
-        if (data.types.length > 0) searchParams.append("petType", data.types);
+        if (data.types && data.types.length > 0) {
+          searchParams.append("petType", data.types.join(","));
+        }
         if (data.rate) searchParams.append("rate", data.rate);
         if (data.exp && data.exp != 3) searchParams.append("exp", data.exp);
         if (data.paging) searchParams.append("page", data.paging);
       }
+      console.log(searchParams.toString());
 
       const result = await axios.get(
-        "/sitterManagement?" + searchParams.toString()
+        "http://localhost:4000/sitterManagement?" + searchParams.toString()
       );
-      this.pets = result.data.data;
-      this.paging = result.data.paging;
-      this.$refs.topRef.scrollIntoView({ behavior: "smooth" });
-    },
-    handlePaging(page) {
-      if (page >= 1 && page <= this.paging.totalPages) {
-        this.searchPets({ ...this.searchData, paging: page });
+      pets.value = result.data.data;
+      paging.value = result.data.paging;
+      if (topRef.value) {
+        topRef.value.scrollIntoView({ behavior: "smooth" });
       }
-    },
+    };
+
+    return {
+      searchData,
+      pets,
+      paging,
+      handleSearch,
+      handlePaging,
+      topRef,
+    };
   },
 };
 </script>
@@ -111,4 +131,4 @@ export default {
 <style scoped>
 /* Your component-specific styles go here */
 </style>
- -->
+./SearchPanel.vue
